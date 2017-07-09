@@ -20,6 +20,10 @@ namespace CyberRebeatIDE
             window.Loaded += Window_Loaded;
         }
 
+        /// <summary>
+        /// 背景画像セット　右上寄せ
+        /// </summary>
+        /// <param name="path"></param>
         private void loadImage(string path)
         {
             var imagesource = new BitmapImage(new Uri(path, UriKind.Relative));
@@ -36,20 +40,21 @@ namespace CyberRebeatIDE
         {
             var mainwindow = (Window)sender;
 
+            // 背景画像挿入
             parentBorder.Child = imagecontrol;
-            var cache = new BitmapCache { SnapsToDevicePixels = true };
-            cache.Freeze();
-            parentBorder.CacheMode = cache;
             Grid.SetRowSpan(parentBorder, 4);
             var rootgrid = (Grid)mainwindow.Template.FindName("RootGrid", mainwindow);
             rootgrid.Children.Insert(0, parentBorder);
 
+            // タイトルバー　透過
+            // 型が取れないので、dynamic
             dynamic title = mainwindow.Template.FindName("MainWindowTitleBar", mainwindow);
-            SolidColorBrush backgorund = title.Background;
-            var newBg = new SolidColorBrush(backgorund.Color);
-            newBg.Opacity = 0;
-            title.Background = newBg;
 
+            // title.Backgroundは読み取り専用のため
+            SolidColorBrush backgorund = title.Background;
+            title.Background = new SolidColorBrush(backgorund.Color) { Opacity = 0 };
+
+            // メニューバー　透過
             dynamic dock = mainwindow.Template.FindName("PART_MenuBarFrameControlContainer", mainwindow);
             dock.Parent.Background = new SolidColorBrush(Colors.Gray) { Opacity = 0 };
 
@@ -58,6 +63,7 @@ namespace CyberRebeatIDE
             dynamic vsMenu = VisualTreeHelper.GetChild(vsMenuParent, 0);
             vsMenu.Background = new SolidColorBrush(Colors.Gray) { Opacity = 0 };
 
+            // ツールバー　透過
             var third = (DependencyObject)mainwindow.Template.FindName("PART_ToolBarHost", mainwindow);
             var thirdGrid = (Grid)VisualTreeHelper.GetChild(third, 0);
             dynamic thirdTarget = VisualTreeHelper.GetChild(thirdGrid, 0);

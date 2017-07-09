@@ -29,16 +29,6 @@ namespace CyberRebeatIDE
         /// </summary>
         private readonly IWpfTextView view;
 
-        /// <summary>
-        /// Adornment brush.
-        /// </summary>
-        private readonly Brush brush;
-
-        /// <summary>
-        /// Adornment pen.
-        /// </summary>
-        private readonly Pen pen;
-
         private Image canvas = new Image() { IsHitTestVisible = false };
 
         private BitmapImage bitmap = new BitmapImage(new Uri(@"Images\bg.png", UriKind.Relative));
@@ -49,22 +39,14 @@ namespace CyberRebeatIDE
         /// <param name="view">Text view to create the adornment for</param>
         public TextAdornment1(IWpfTextView view)
         {
-            if (view == null)
-            {
-                throw new ArgumentNullException("view");
-            }
             this.view = view;
-
-
             this.layer = this.view.GetAdornmentLayer("TextAdornment1");
-
-            //this.view.BackgroundBrushChanged += (s, e) => setImage();
             this.view.LayoutChanged += (s, e) => setImage();
-            //this.view.ViewportHeightChanged += (s, e) => setImage();
-            //this.view.ViewportWidthChanged += (s, e) => setImage();
-
         }
 
+        /// <summary>
+        /// 背景画像セット
+        /// </summary>
         private void setImage()
         {
             this.layer.RemoveAllAdornments();
@@ -76,12 +58,8 @@ namespace CyberRebeatIDE
             Canvas.SetLeft(canvas, this.view.ViewportRight - bitmap.Width);
             Canvas.SetTop(canvas, this.view.ViewportTop);
 
-
             canvas.Width = bitmap.Width;
             canvas.Height = bitmap.Height;
-
-
-            // [Order(Before = PredefinedAdornmentLayers.Caret)]
 
             this.layer.AddAdornment(AdornmentPositioningBehavior.ViewportRelative, null, null, canvas, null);
         }
